@@ -1,0 +1,1 @@
+Aplicação Spring Boot desenvolvida em Java 17, utilizando Maven como gerenciador de dependências. Ele implementa um sistema simples de cadastro e gerenciamento de eventos, combinando interfaces web (HTML/Thymeleaf) e uma API REST.
