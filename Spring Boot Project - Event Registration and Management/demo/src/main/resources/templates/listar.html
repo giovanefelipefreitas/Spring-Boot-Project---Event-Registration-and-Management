@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Eventos</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/webjars/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; background-color: #0cbccc; }
+        h2 { color: #333; }
+        table { background-color: #ffffff; border-collapse: collapse; width: 100%; }
+        th, td { padding: 10px; border: 1px solid #ccc; }
+        .btn-editar { color: white; background-color: green; margin-right: 5px; }
+        .btn-excluir { color: white; background-color: red; }
+    </style>
+</head>
+<body>
+<h2>Eventos Cadastrados</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Evento</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="tabelaEvento"></tbody>
+</table>
+
+<p><a href="/cadastro" style="color: white;">Voltar ao cadastro</a></p>
+
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+
+    function carregarEventos() {
+        $.get("/api/eventos", function(eventos) {
+            const tabela = $("#tabelaEvento");
+            tabela.empty();
+            eventos.forEach(function(c) {
+                tabela.append(`
+                    <tr>
+                        <td>${c.id}</td>
+                        <td><input type="text" value="${c.descricao}" id="desc-${c.id}"></td>
+                        <td><input type="date" value="${c.data}" id="data-${c.id}"></td>
+                        <td>
+                            <button class="btn-editar" onclick="atualizar(${c.id})">Editar</button>
+                            <button class="btn-excluir" onclick="excluir(${c.id})">Excluir</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        });
+    }
+
+    window.atualizar = function(id) {
+        const descricao = $(`#desc-${id}`).val();
+        const data = $(`#data-${id}`).val();
+
+        $.ajax({
+            url: `/api/eventos/${id}`,
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify({ descricao, data }),
+            success: function() {
+                alert("Evento atualizado com sucesso!");
+                carregarEventos();
+            }
+        });
+    }
+
+    window.excluir = function(id) {
+        if (confirm("Tem certeza que deseja excluir este evento?")) {
+            $.ajax({
+                url: `/api/eventos/${id}`,
+                method: "DELETE",
+                success: function() {
+                    alert("Evento excluído!");
+                    carregarEventos();
+                }
+            });
+        }
+    }
+
+    carregarEventos();
+});
+</script>
+</body>
+</html>

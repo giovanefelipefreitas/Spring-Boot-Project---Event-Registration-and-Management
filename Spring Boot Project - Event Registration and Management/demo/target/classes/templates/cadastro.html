@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro de Evento</title>
+    <meta charset="UTF-8">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/webjars/open-iconic/font/css/open-iconic-bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; background-color: #0cbccc; }
+        h2 { color: #333; }
+        a { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body class="pt-5">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 p-4 shadow-lg bg-white rounded">
+            <h2 class="text-center text-primary mb-4">
+                <span class="oi oi-calendar mr-2"></span> Cadastro de Evento
+            </h2>
+
+            <form id="formCadastro">
+                <div class="form-group mb-3">
+                    <label for="descricao" class="font-weight-bold">Evento:</label>
+                    <input type="text" id="descricao" class="form-control" placeholder="Descreva o evento" required>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="data" class="font-weight-bold">Data:</label>
+                    <input type="date" id="data" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg btn-block mt-3">
+                    <span class="oi oi-check mr-2"></span> Cadastrar
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-2 border-top">
+                <a href="/listar" class="text-secondary small">
+                    <span class="oi oi-list mr-1"></span> Ver lista de eventos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $("#formCadastro").submit(function(e) {
+        e.preventDefault();
+        const descricao = $("#descricao").val();
+        const data = $("#data").val();
+
+        $.ajax({
+            url: "/api/eventos",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ descricao, data }),
+            success: function() {
+                alert("Evento cadastrado com sucesso!");
+                $("#formCadastro")[0].reset();
+            },
+            error: function() {
+                alert("Erro ao cadastrar evento.");
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
